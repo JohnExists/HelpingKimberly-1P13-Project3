@@ -12,7 +12,7 @@ This is Kimberly! She is a joyful, independent, and resilient person. Unfortunat
 Currently, Kimberly uses Signia Hearing Aids, a white cane, and many apps on her phone for support in her daily life.
 Despite these assistive technologies, Kimberly still faces many challenges to living independently within her daily environment. 
 
-In this project, me and my 3 other group members will assist with one challenges she faces, Microwave usage.
+In this project, me and my 3 other group members will assist with one challenge she faces, Microwave usage.
 
 ## Our Solution
 
