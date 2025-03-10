@@ -9,14 +9,12 @@
 
 #define TEMP_READ 32
 
-String http;
-bool ledOn = false;
-
 IPAddress currentAddress;
 WebServer server(80);
 WebSocketsServer socket = WebSocketsServer(81);
 
-WiFiClient client;
+const int INTERVAL = 2000;
+unsigned long previousMillis = 0;
 
 IPAddress connectWiFi(const char* SSID, const char* PASSWORD)
 {
@@ -44,10 +42,10 @@ void launchServer()
   server.begin();
   Serial.println("Loaded Server!");
   server.on("/", [] () {
-    server.send(200, (std::string("text").append("/").append("html")).c_str(), 
-      (std::string(INDEX_HTML_OPEN) + std::string(INDEX_HTML_CLOSE)).c_str());
+    server.send(200, (std::string("text").append("/").append("html")).c_str(), INDEX_HTML);
   });
   server.begin();
+  socket.begin();
 }
 
 void setup() 
@@ -63,5 +61,13 @@ void setup()
 void loop()
 {
   server.handleClient();
+  socket.loop();
+
+  unsigned long now = millis();
+  if(now - previousMillis > INTERVAL)
+  {
+    socket.broadcastTXT(std::to_string(analogRead(32)).c_str());
+    previousMillis = now;
+  }
 }
 
