@@ -1,5 +1,5 @@
-
-#include<string>
+#ifndef WEBSITE_H
+#define WEBSITE_H
 
 const char* INDEX_HTML_OPEN = R"(
     <!DOCTYPE html>
@@ -31,3 +31,5 @@ const char* INDEX_HTML_CLOSE = R"(
         </body>
     </html>
 )";
+
+#endif

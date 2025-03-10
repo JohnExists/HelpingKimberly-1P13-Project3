@@ -1,17 +1,21 @@
 #include <Arduino.h>
 #include<WiFi.h>
 #include<WebServer.h>
+#include<WebSocketsServer.h>
 
 #include"website.h"
 #include"password.h"
 
-#define BLUE_LED 23
+
+#define TEMP_READ 32
 
 String http;
 bool ledOn = false;
 
 IPAddress currentAddress;
-WiFiServer server(80);
+WebServer server(80);
+WebSocketsServer socket = WebSocketsServer(81);
+
 WiFiClient client;
 
 IPAddress connectWiFi(const char* SSID, const char* PASSWORD)
@@ -35,73 +39,29 @@ IPAddress connectWiFi(const char* SSID, const char* PASSWORD)
   return WiFi.localIP();
 }
 
-
 void launchServer()
 {
   server.begin();
   Serial.println("Loaded Server!");
+  server.on("/", [] () {
+    server.send(200, (std::string("text").append("/").append("html")).c_str(), 
+      (std::string(INDEX_HTML_OPEN) + std::string(INDEX_HTML_CLOSE)).c_str());
+  });
+  server.begin();
 }
 
 void setup() 
 {
-  pinMode(BLUE_LED, OUTPUT);
-
   Serial.begin(9600);
+  pinMode(TEMP_READ, INPUT);
+
   currentAddress = connectWiFi(userSSID, userPASSWORD);
   launchServer();
+
 }
 
-void sendResponse()
+void loop()
 {
-  client.println("HTTP/1.1 200 OK");
-  client.println("Content-type:text/html");
-  client.println();
+  server.handleClient();
 }
 
-void updateLED()
-{
-
-}
-
-void updateWebpage()
-{
-  client.println(INDEX_HTML_OPEN);
-  client.println(INDEX_HTML_CLOSE);
-}
-
-void loop() 
-{
-  client = server.available();
-  if(client)
-  {
-    Serial.println("New client logging in...");
-    String clientData;
-    while(client.connected())
-    {
-      if(client.available())
-      {
-        char read = client.read();
-        http += read;
-        Serial.print(read);
-        if(read == '\n')
-        {
-          if(clientData.length() == 0)
-          {
-            sendResponse();
-            updateLED();
-            updateWebpage();
-          } else {
-            clientData = "";
-          }
-        } else if(read != '\r') {
-          clientData += read;
-        }
-      }
-    }
-    http = "";
-    client.stop();
-    Serial.println("Client Disconnected!");
-    Serial.println();
-  }
-  
-}
