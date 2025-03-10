@@ -7,14 +7,33 @@
 #include"password.h"
 
 
-#define TEMP_READ 32
+#define TRIG_PIN 18
+#define ECHO_PIN 19
 
 IPAddress currentAddress;
 WebServer server(80);
 WebSocketsServer socket = WebSocketsServer(81);
 
-const int INTERVAL = 2000;
+const int INTERVAL = 1500;
 unsigned long previousMillis = 0;
+
+void setupSensor()
+{
+    pinMode(TRIG_PIN, OUTPUT);
+    pinMode(ECHO_PIN, INPUT);
+}
+
+float readSensor()
+{
+    digitalWrite(TRIG_PIN, LOW);
+    delayMicroseconds(2);
+    digitalWrite(TRIG_PIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIG_PIN, LOW);
+  
+    float duration = pulseIn(ECHO_PIN, HIGH);
+    return duration / 58.2;
+}
 
 IPAddress connectWiFi(const char* SSID, const char* PASSWORD)
 {
@@ -51,8 +70,7 @@ void launchServer()
 void setup() 
 {
   Serial.begin(9600);
-  pinMode(TEMP_READ, INPUT);
-
+  setupSensor();
   currentAddress = connectWiFi(userSSID, userPASSWORD);
   launchServer();
 
@@ -66,7 +84,8 @@ void loop()
   unsigned long now = millis();
   if(now - previousMillis > INTERVAL)
   {
-    socket.broadcastTXT(std::to_string(analogRead(32)).c_str());
+    int sensorValue = static_cast<int>(readSensor());
+    if(sensorValue < 100) socket.broadcastTXT(std::to_string(sensorValue).c_str());
     previousMillis = now;
   }
 }

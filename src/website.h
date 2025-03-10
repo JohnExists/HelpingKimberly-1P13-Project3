@@ -11,20 +11,19 @@ const char* INDEX_HTML = R"(
         <body>
             <h1>Simple ESP32 Web Server</h1>
             <button id='launch'>Press Me To Launch Program!</button>
-            <p>The analog signal read is <span id='adc'>-</span></p>
+            <p>The distance read is: <span id='adc'>-</span> cm</p>
         
             <script>
 
-                 let speech = new SpeechSynthesisUtterance();
+                let speech = new SpeechSynthesisUtterance();
+                var Socket;
             
                 function talk(msg) {
                     speech.text = msg;
                     window.speechSynthesis.cancel();
                     window.speechSynthesis.speak(speech);
-                    console.log('Talking...');
 
                 }
-                var Socket;
                 function init() {
                     Socket = new WebSocket('ws://' + window.location.hostname + ':81/');
                     Socket.onmessage = function(event) {
@@ -33,7 +32,7 @@ const char* INDEX_HTML = R"(
                 }
                 function processCommand(event) {
                     document.getElementById('adc').innerHTML = event.data;
-                    talk(event.data);
+                    talk(event.data);                    
                 }
                 document.getElementById('launch').onclick = function() {
                     init();
