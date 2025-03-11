@@ -35,6 +35,7 @@ const char* INDEX_HTML = R"(
                     talk(event.data);                    
                 }
                 document.getElementById('launch').onclick = function() {
+                    talk('');
                     init();
                 };
             </script>
