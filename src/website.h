@@ -31,7 +31,12 @@ const char* INDEX_HTML = R"(
                     };
                 }
                 function processCommand(event) {
-                    document.getElementById('adc').innerHTML = event.data;
+                    output = event.data;
+                    if(output == 0) {
+                        output = '0, An ERROR seems to have occured, please check your sensor'
+                    }                
+                    document.getElementById('adc').innerHTML = outpit;
+    
                     talk(event.data);                    
                 }
                 document.getElementById('launch').onclick = function() {
