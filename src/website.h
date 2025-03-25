@@ -11,7 +11,7 @@ const char* INDEX_HTML = R"(
         <body>
             <h1>Simple ESP32 Web Server</h1>
             <button id='launch'>Press Me To Launch Program!</button>
-            <p>The distance read is: <span id='adc'>-</span> cm</p>
+            <p>The value given is: <span id='adc'>-</span></p>
         
             <script>
 
@@ -35,7 +35,7 @@ const char* INDEX_HTML = R"(
                     if(output == 0) {
                         output = '0, An ERROR seems to have occured, please check your sensor'
                     }                
-                    document.getElementById('adc').innerHTML = outpit;
+                    document.getElementById('adc').innerHTML = output;
     
                     talk(event.data);                    
                 }

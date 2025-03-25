@@ -2,11 +2,13 @@
 #include<WiFi.h>
 #include<WebServer.h>
 #include<WebSocketsServer.h>
+#include <unordered_map>
 
 #include"website.h"
 #include"password.h"
 
 // Initializing constants
+#define NUMBER_OF_SAMPLES 33
 #define ROW_DOES_NOT_EXIST -1
 
 #define SAMPLE_RIGHT  0
@@ -21,15 +23,20 @@
 #define ECHO_PIN_MID 21
 #define ECHO_PIN_LEFT 23
 
+#define SAMPLING_PERIOD 30
+
 IPAddress currentAddress;
 WebServer server(80);
 WebSocketsServer socket = WebSocketsServer(81);
 
-const int INTERVAL = 10;
+int currentSamplingPeriod = 0;
+int sampledData[NUMBER_OF_SAMPLES];
 
 unsigned long previousMillis = 0;
 int samplePeriod = SAMPLE_RIGHT;
 float sensorValueRight = 0, sensorValueMid = 0, sensorValueLeft = 0; 
+
+int previousData = -1;
 
 void setupSensor()
 {
@@ -106,12 +113,14 @@ void launchServer()
 
 void setup() 
 {
+  for(int i = 0; i < NUMBER_OF_SAMPLES; ++i) sampledData[i] = 0;
   // Sets up serial port for debugging purposes
   Serial.begin(9600);
   // Launchs the sensor, connects to wifi and launches server
   setupSensor();
-  // currentAddress = connectWiFi(userSSID, userPASSWORD);
-  // launchServer();
+
+  currentAddress = connectWiFi(userSSID, userPASSWORD);
+  launchServer();
 }
 
 
@@ -135,6 +144,31 @@ int getRow(float sensorValue)
   return ROW_DOES_NOT_EXIST;
 }
 
+int mostFrequent(int nums[], int size) {
+  int result = nums[0];
+  int maxCount = 0;
+
+  // Loop through the array to find the most frequent number
+  for (int i = 0; i < size; i++) {
+      int count = 0;
+      
+      // Count occurrences of nums[i]
+      for (int j = 0; j < size; j++) {
+          if (nums[j] == nums[i]) {
+              count++;
+          }
+      }
+
+      // Update the most frequent number if the count of nums[i] is greater
+      if (count > maxCount) {
+          result = nums[i];
+          maxCount = count;
+      }
+  }
+
+  return result;
+}
+
 void getButtonHovered()
 {
   // Values for which sensors detect a finger
@@ -142,35 +176,31 @@ void getButtonHovered()
     midDet = objectDetected(sensorValueMid),
     leftDet = objectDetected(sensorValueLeft);
     
-  std::string txt = "";
+  int result = -1;
   // Hovering over middle buttons
   if((rightDet && midDet && leftDet) || (!rightDet && midDet && !leftDet))
   {
     int row = getRow(sensorValueMid);
-    if(row == 1) txt = "2";
-    if(row == 2) txt = "5";
-    if(row == 3) txt = "8";
+    if(row == 1) result = 2;
+    if(row == 2) result = 5;
+    if(row == 3) result = 8;
   // Hovering over right buttons
   } else if ((rightDet && midDet) || (rightDet && !midDet && !leftDet)) 
   {
     int row = getRow(sensorValueRight);
-    if(row == 1) txt = "3";
-    if(row == 2) txt = "6";
-    if(row == 3) txt = "9";
+    if(row == 1) result = 3;
+    if(row == 2) result = 6;
+    if(row == 3) result = 9;
     // Hovering over left buttons
   } else if ((leftDet && midDet) || (!rightDet && !midDet && leftDet))
   {
     int row = getRow(sensorValueLeft);
-    if(row == 1) txt = "1";
-    if(row == 2) txt = "4";
-    if(row == 3) txt = "7";
-    
-  // No hovering is detected / Invalid hovering
-  } else {
-    Serial.println("NONE");
-  }
+    if(row == 1) result = 1;
+    if(row == 2) result = 4;
+    if(row == 3) result = 7;
+      } 
 
-  Serial.println(txt.c_str());
+  sampledData[currentSamplingPeriod] = result;
 
 }
 
@@ -178,13 +208,13 @@ void getButtonHovered()
 void loop()
 {
   // Runs the update cycle for the server and web socket
-  // server.handleClient();
-  // socket.loop();
+  server.handleClient();
+  socket.loop();
 
   // If a certain time has passed (500 ms) it will
   // sample sensor data and broadcast it to the user
   unsigned long now = millis();
-  if(now - previousMillis > INTERVAL)
+  if(now - previousMillis > (SAMPLING_PERIOD / 3))
   {
     switch (samplePeriod)
     {
@@ -198,9 +228,9 @@ void loop()
 
     case SAMPLE_MIDDLE:
       sensorValueMid = readSensor(TRIG_PIN_MID, ECHO_PIN_MID);
-      // #ifdef DEBUG
+      #ifdef DEBUG
       if(objectDetected(sensorValueMid)) serialPrintClean("MIDDLE: ", sensorValueMid);
-      // #endif
+      #endif
       samplePeriod = SAMPLE_LEFT;
       break;
 
@@ -213,11 +243,18 @@ void loop()
 
       // Done Sampling Sequence (Prints, Then Interprets Current Data)
       getButtonHovered();
-      Serial.println("---------------------DONE SAMPLING---------------------");
+      ++currentSamplingPeriod;
+      if(currentSamplingPeriod == NUMBER_OF_SAMPLES) 
+      {
+        int data = mostFrequent(sampledData, NUMBER_OF_SAMPLES);
+        if(data != -1 || data == previousData) socket.broadcastTXT(std::to_string(data).c_str());
+        Serial.println(data);
+        previousData = data;
+        currentSamplingPeriod = 0;
+      }
       break;
     }
 
-    // if(sensorValue < 100) socket.broadcastTXT(std::to_string(sensorValue).c_str());
     previousMillis = now;
   }
 }
