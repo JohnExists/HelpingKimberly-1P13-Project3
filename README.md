@@ -20,7 +20,7 @@ In this project, me and my 3 other group members will assist with one challenge 
 
 ## Circuit Diagrams
 
-![circuit (2)](https://github.com/user-attachments/assets/4a04e757-4e9d-4896-9e21-87ef16210138)
+![circuit (4)](https://github.com/user-attachments/assets/8b4ab522-4606-4db7-8aaf-e876f33a464a)
 
 ## Note Before Flashing Code To ESP32
 #### To ensure that the code compiles create a new "password.h" file in the "src" folder with the following code (replace the placeholders in the string text)
