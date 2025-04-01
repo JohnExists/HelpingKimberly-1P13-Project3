@@ -9,9 +9,9 @@ const char* INDEX_HTML = R"(
             <meta name="viewport" content="width=device-width, initial-scale=1">
         </head>
         <body>
-            <h1>Simple ESP32 Web Server</h1>
+            <h1>Hello Kimberly!</h1>
             <button id='launch'>Press Me To Launch Program!</button>
-            <p>The value given is: <span id='adc'>-</span></p>
+            <h1>The value given is: <span id='adc'>-</span></h1>
         
             <script>
 
@@ -20,6 +20,8 @@ const char* INDEX_HTML = R"(
             
                 function talk(msg) {
                     speech.text = msg;
+                    if(msg === '10') speech.text = 'Start'
+                    if(msg === '11') speech.text = 'Cancel'
                     window.speechSynthesis.cancel();
                     window.speechSynthesis.speak(speech);
 
@@ -32,9 +34,8 @@ const char* INDEX_HTML = R"(
                 }
                 function processCommand(event) {
                     output = event.data;
-                    if(output == 0) {
-                        output = '0, An ERROR seems to have occured, please check your sensor'
-                    }                
+                    if(output === '10') output = 'START'
+                    if(output === '11') output = 'CANCEL'
                     document.getElementById('adc').innerHTML = output;
     
                     talk(event.data);                    
