@@ -32,8 +32,14 @@ Here is how we achieved this solution.
   * Hosts a WebSocketServer on the local network so Kimberely can connect to the website using her iPhone
   * The microcontroller reads and interprets the ultrasonice sensor data to understand which button Kimberely is hovering over
   * The button that Kimberely is hovering over is stored as an integer and is broadcasted to the client using WebSockets
-  * The value is received by the client and is output in real-time using the html text-to-speech API
- 
+  * The value is received by the client and is output in real-time using the html text-to-speech API (SpeechSynthesis)
+* To distribute power to the ESP32 and the ultrasonic sensors, an STM32 Nucleo microcontroller was used
+
+
+Why was a website used?
+ * Compatibility accross all devices
+ * Doesn't require an external downloads making it the most convenient to use
+ * Large support through external APIs and libraries
 
 Why was an ESP32 used?
  * An ESP32 was used since it supported high-speed networking capabilities with the internet, is low cost and has enough computing power for our applications.
@@ -44,8 +50,19 @@ Why was a WebSocketServer used?
  * The WebSockets protocol was the preferred choice since it allowed for real-time, reliable and frequent data communication between the client and the server which was ideal for our applications.
  * This protocol was also preferred since it was common in industry and had the most support behind it.
 
+Decision Matrix Used For This Product:
+<br>
+<img width="528" height="233" alt="image" src="https://github.com/user-attachments/assets/35a062e3-0772-4b6c-80d4-e178a69834ac" />
+
 ## Challenges
-Since the ESP32 operates at 3.3V and the Ultrasonic Sensors operated at 5.0V this posed a challenge that needed to be overcome.
+#### The ESP32 operates at 3.3V and the Ultrasonic Sensors operates at 5.0V.
+ * The solution is split into two parts:
+   * providing a high enough voltage for optimal sensor functionality
+     * Using a power distribution board to provide a stable 5V to the sensors
+   * Limiting the voltage received from the sensors to avoid damaging the ESP32 pins
+     * Ultrasonic sensor output 5V through the echo pin and the ESP32 pins can only accept 3.3V
+     * Limited the voltage received from the output signal using a voltage divider
+<img width="531" height="284" alt="image" src="https://github.com/user-attachments/assets/7670ca60-d829-45ab-8225-e16df5134618" />
 
 ## Images 
 
