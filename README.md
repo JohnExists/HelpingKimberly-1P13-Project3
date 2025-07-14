@@ -1,4 +1,4 @@
-
+<img width="1980" height="1102" alt="image (1)" src="https://github.com/user-attachments/assets/89b3a9cf-8612-4a20-b69a-a0c8d061e0ab" />
 ![1p13_Project_3Helping_Kimberly](https://github.com/user-attachments/assets/6c8d75ba-75a1-473c-81db-4769a56fba0d)
 
 ## Introduction
@@ -25,6 +25,9 @@ To allow Kimberely to easily use her microwave, we designed a compact system tha
 * Considered 3 quantitative objectives: Non-Intrusive, Easy Manufacturing, Environmentally Friendly
 * Considered 2 qualitative objectives: Easy-to-Use and Comfortable
 * Stayed under the budget constraint of $35
+
+## Images 
+
 
 ## Approach
 Here is how we achieved this solution.
@@ -64,7 +67,10 @@ Decision Matrix Used For This Product:
      * Limited the voltage received from the output signal using a voltage divider
 <img width="531" height="284" alt="image" src="https://github.com/user-attachments/assets/7670ca60-d829-45ab-8225-e16df5134618" />
 
-## Images 
+## Previous Prototypes
+<img width="1980" height="1102" alt="image (1)" src="https://github.com/user-attachments/assets/c5b5cf6a-3671-4be4-8bd8-2484a0aed27e" />
+<img width="1986" height="988" alt="image (2)" src="https://github.com/user-attachments/assets/f8de0949-9fba-4590-b51e-9ff02ca4a5dc" />
+
 
 ## Circuit Diagrams
 
