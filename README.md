@@ -20,7 +20,7 @@ To allow Kimberely to easily use her microwave, we designed a compact system tha
 * Takes input data from Kimberely's finger using three ultrasonic sensors about which button she is hovering over.
 * Sends real-time audio feedback to Kimberly via her iPhone, compatible with any Bluetooth-enabled hearing aids.
   * To achieve this Kimberely's connects to a website hosted locally on her network   
-* Achieved an accuracy of 90-95% with a response time of less than 1000 ms.
+* Achieved an accuracy of 90-95% with a response time of less than 2500 ms.
 * Considered 3 quantitative objectives: Non-Intrusive, Easy Manufacturing, Environmentally Friendly
 * Considered 2 qualitative objectives: Easy-to-Use and Comfortable
 * Stayed under the budget constraint of $35
