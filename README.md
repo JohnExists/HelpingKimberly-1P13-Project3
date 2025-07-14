@@ -1,4 +1,3 @@
-<img width="1980" height="1102" alt="image (1)" src="https://github.com/user-attachments/assets/89b3a9cf-8612-4a20-b69a-a0c8d061e0ab" />
 ![1p13_Project_3Helping_Kimberly](https://github.com/user-attachments/assets/6c8d75ba-75a1-473c-81db-4769a56fba0d)
 
 ## Introduction
@@ -26,14 +25,15 @@ To allow Kimberely to easily use her microwave, we designed a compact system tha
 * Considered 2 qualitative objectives: Easy-to-Use and Comfortable
 * Stayed under the budget constraint of $35
 
-## Images 
+
+![03ded4d2-a017-41ba-85c5-f5ff64413738](https://github.com/user-attachments/assets/0d9fe456-917c-4269-bdec-0e39acf6a753)
 
 
 ## Approach
 Here is how we achieved this solution.
 * The main microntroller is an ESP32 used for performing the following operations:
   * Hosts a WebSocketServer on the local network so Kimberely can connect to the website using her iPhone
-  * The microcontroller reads and interprets the ultrasonice sensor data to understand which button Kimberely is hovering over
+  * The microcontroller reads and interprets the data from the three ultrasonice sensors (HC-SR04, one for each column) to understand which button Kimberely is hovering over
   * The button that Kimberely is hovering over is stored as an integer and is broadcasted to the client using WebSockets
   * The value is received by the client and is output in real-time using the html text-to-speech API (SpeechSynthesis)
 * To distribute power to the ESP32 and the ultrasonic sensors, an STM32 Nucleo microcontroller was used
@@ -58,14 +58,19 @@ Decision Matrix Used For This Product:
 <img width="528" height="233" alt="image" src="https://github.com/user-attachments/assets/35a062e3-0772-4b6c-80d4-e178a69834ac" />
 
 ## Challenges
-#### The ESP32 operates at 3.3V and the Ultrasonic Sensors operates at 5.0V.
+#### The ESP32 and Ultrasonic Sensor Have Different Operating Voltages.
  * The solution is split into two parts:
    * providing a high enough voltage for optimal sensor functionality
      * Using a power distribution board to provide a stable 5V to the sensors
    * Limiting the voltage received from the sensors to avoid damaging the ESP32 pins
      * Ultrasonic sensor output 5V through the echo pin and the ESP32 pins can only accept 3.3V
      * Limited the voltage received from the output signal using a voltage divider
-<img width="531" height="284" alt="image" src="https://github.com/user-attachments/assets/7670ca60-d829-45ab-8225-e16df5134618" />
+<img width="354" height="189" alt="image" src="https://github.com/user-attachments/assets/7670ca60-d829-45ab-8225-e16df5134618" />
+
+#### Interpreting The Data From The Sensor Accurately.
+   * The output from the HC-SR04 is very noisy.
+     * The three sensors are sampled 35 times with a 30 ms delay between each sample, afterwards the most frequent value is sent to the client and it loops through this process again
+   
 
 ## Previous Prototypes
 <img width="1980" height="1102" alt="image (1)" src="https://github.com/user-attachments/assets/c5b5cf6a-3671-4be4-8bd8-2484a0aed27e" />
