@@ -13,7 +13,7 @@ Despite these assistive technologies, Kimberly still faces many challenges to li
 
 In this project, me and my 3 other group members will assist with one challenge she faces, Microwave usage. 
 
-To use her microwave, Kimberely's needs to use her iPhone camera to zoom into each button. This process is time consuming and inconvenient for her.
+To use her microwave, Kimberely's needs to use her iPhone camera to zoom into each button too see what she is pressing. This process is time consuming and inconvenient for her.
 
 ## Our Solution
 To allow Kimberely to easily use her microwave, we designed a compact system that plugs into a wall outlet and where the sensors are placed under the buttons of a microwave. Here are the features:
@@ -34,6 +34,7 @@ Here is how we achieved this solution.
 * The main microntroller is an ESP32 used for performing the following operations:
   * Hosts a WebSocketServer on the local network so Kimberely can connect to the website using her iPhone
   * The microcontroller reads and interprets the data from the three ultrasonice sensors (HC-SR04, one for each column) to understand which button Kimberely is hovering over
+    * First determines which column the finger is hovering over; then it determines the row based on the distance of the finger from the sensor.
   * The button that Kimberely is hovering over is stored as an integer and is broadcasted to the client using WebSockets
   * The value is received by the client and is output in real-time using the html text-to-speech API (SpeechSynthesis)
 * To distribute power to the ESP32 and the ultrasonic sensors, an STM32 Nucleo microcontroller was used
@@ -57,6 +58,11 @@ Decision Matrix Used For This Product:
 <br>
 <img width="528" height="233" alt="image" src="https://github.com/user-attachments/assets/35a062e3-0772-4b6c-80d4-e178a69834ac" />
 
+#### Circuit Diagrams
+
+![circuit (4)](https://github.com/user-attachments/assets/8b4ab522-4606-4db7-8aaf-e876f33a464a)
+
+
 ## Challenges
 #### The ESP32 and Ultrasonic Sensor Have Different Operating Voltages.
  * The solution is split into two parts:
@@ -68,18 +74,22 @@ Decision Matrix Used For This Product:
 <img width="354" height="189" alt="image" src="https://github.com/user-attachments/assets/7670ca60-d829-45ab-8225-e16df5134618" />
 
 #### Interpreting The Data From The Sensor Accurately.
-   * The output from the HC-SR04 is very noisy.
+   * Since the HC-SR04 is a cheap sensor, it's output is very noisy.
      * The three sensors are sampled 35 times with a 30 ms delay between each sample, afterwards the most frequent value is sent to the client and it loops through this process again
-   
+   * The sensors detect the users finger even if it's in another column, the solution was checking multiple columns
+     * If the left and middle sensors detect an object, that means it's hovering over the left column
+     * If the left, middle and right sensors detect an object, that means it's hovering over the middle column
+     * If the middle and right sensors detect an object, that means it's hovering over the right column
+  
 
 ## Previous Prototypes
 <img width="1980" height="1102" alt="image (1)" src="https://github.com/user-attachments/assets/c5b5cf6a-3671-4be4-8bd8-2484a0aed27e" />
 <img width="1986" height="988" alt="image (2)" src="https://github.com/user-attachments/assets/f8de0949-9fba-4590-b51e-9ff02ca4a5dc" />
 
+## Testing Procedure
+<img width="1992" height="950" alt="image (4)" src="https://github.com/user-attachments/assets/4fb5d266-f382-4f63-9e07-b694d5488542" />
+<img width="1980" height="970" alt="image (3)" src="https://github.com/user-attachments/assets/e2db945e-a551-4e60-9ed2-909db8eda44d" />
 
-## Circuit Diagrams
-
-![circuit (4)](https://github.com/user-attachments/assets/8b4ab522-4606-4db7-8aaf-e876f33a464a)
 
 ## Note Before Flashing Code To ESP32
 #### To ensure that the code compiles create a new "password.h" file in the "src" folder with the following code (replace the placeholders in the string text)
