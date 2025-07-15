@@ -88,8 +88,6 @@ Decision Matrix Used For This Product:
 
 ## Testing Procedure
 <img width="1992" height="950" alt="image (4)" src="https://github.com/user-attachments/assets/4fb5d266-f382-4f63-9e07-b694d5488542" />
-<img width="1980" height="970" alt="image (3)" src="https://github.com/user-attachments/assets/e2db945e-a551-4e60-9ed2-909db8eda44d" />
-
 
 ## Note Before Flashing Code To ESP32
 #### To ensure that the code compiles create a new "password.h" file in the "src" folder with the following code (replace the placeholders in the string text)
